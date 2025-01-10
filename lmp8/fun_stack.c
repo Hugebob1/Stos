@@ -3,15 +3,12 @@
 #include <string.h>
 #include "fun_stack.h"
 
-// Głowa listy stosu
 list *stack_head = NULL;
-
-// Implementacja funkcji z pliku nagłówkowego
 
 int top_of_funstack(void) {
     if (stack_head == NULL) {
         fprintf(stderr, "Stos jest pusty!\n");
-        return -1; // Wartość wskazująca błąd
+        return -1; 
     }
     return stack_head->par_level;
 }
@@ -23,7 +20,7 @@ void put_on_fun_stack(int par_level, char *funame) {
         exit(EXIT_FAILURE);
     }
     new_node->par_level = par_level;
-    new_node->funname = strdup(funame); // Kopiowanie nazwy funkcji
+    new_node->funname = strdup(funame);
     new_node->next = stack_head;
     stack_head = new_node;
 }
@@ -34,7 +31,7 @@ char *get_from_fun_stack(void) {
         return NULL;
     }
     list *temp = stack_head;
-    char *funname = strdup(stack_head->funname); // Kopiowanie nazwy funkcji
+    char *funname = strdup(stack_head->funname);
     stack_head = stack_head->next;
 
     free(temp->funname);
@@ -43,11 +40,27 @@ char *get_from_fun_stack(void) {
 }
 
 void print_stack(list *head) {
-    printf("Zawartość stosu:\n");
+    printf("Zawartosc stosu:\n");
     while (head != NULL) {
         printf("Funname: %s, Par_level: %d\n", head->funname, head->par_level);
         head = head->next;
     }
 }
 
-// Funkcja główna
+int main(void) {
+    put_on_fun_stack(1, "main");
+    put_on_fun_stack(2, "function_a");
+    put_on_fun_stack(3, "function_b");
+    printf("Top of stack par_level: %d\n", top_of_funstack());
+    print_stack(stack_head);
+    char *funname = get_from_fun_stack();
+    printf("Zdjeto funkcje: %s\n", funname);
+    free(funname);
+    print_stack(stack_head);
+    while (stack_head != NULL) {
+        char *name = get_from_fun_stack();
+        free(name);
+    }
+
+    return 0;
+}
